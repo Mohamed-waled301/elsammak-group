@@ -4,15 +4,8 @@ const cors = require('cors');
 
 const app = express();
 
-// ✅ CORS مظبوط 100%
-app.use(cors({
-  origin: "*",
-  methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-  allowedHeaders: ["Content-Type", "Authorization"]
-}));
-
-// 🔥 مهم للـ preflight
-app.options("*", cors());
+// ✅ CORS بسيط ومضمون
+app.use(cors());
 
 app.use(express.json());
 
