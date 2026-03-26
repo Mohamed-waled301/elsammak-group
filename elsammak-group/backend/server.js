@@ -5,11 +5,13 @@ const cors = require('cors');
 const app = express();
 
 // ✅ CORS بسيط ومضمون
-app.use(cors());
+app.get("/", (req, res) => {
+  res.send("Backend is running 🚀");
+});
 
-app.use(express.json());
-
-// routes
+app.get("/test", (req, res) => {
+  res.json({ message: "API works ✅" });
+});
 app.use('/api/auth', require('./routes/authRoutes'));
 app.use('/api/users', require('./routes/userRoutes'));
 app.use('/api/admin', require('./routes/adminRoutes'));
