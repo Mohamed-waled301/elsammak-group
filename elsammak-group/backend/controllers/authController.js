@@ -46,11 +46,11 @@ exports.register = async (req, res) => {
     const message = `Your Verification OTP is: ${otp}. It is valid for 5 minutes.`;
 
     // ✅ FIXED EMAIL CALL
-    await sendEmail(
-      user.email,
-      'El-Sammak Platform - OTP Verification',
-      message
-    );
+    // await sendEmail(
+    //   user.email,
+    //   'El-Sammak Platform - OTP Verification',
+    //   message
+    // );
 
     res.status(201).json({
       success: true,
