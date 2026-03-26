@@ -14,20 +14,19 @@ const generateToken = (id) => {
 exports.register = async (req, res) => {
   try {
     console.log("🔥 Register API Hit");
+    console.log("BODY:", req.body);
 
     const { name, email, password, nationalId, phone, governorate, city } = req.body;
 
-    // Check if user exists
     const userExists = await User.findOne({ email });
     if (userExists) {
       return res.status(400).json({ success: false, message: 'User already exists' });
     }
 
-    // Generate OTP
     const otp = Math.floor(100000 + Math.random() * 900000).toString();
     const otpExpires = Date.now() + 5 * 60 * 1000;
 
-    const user = await User.create({
+    const user = new User({
       name,
       email,
       password,
@@ -40,29 +39,25 @@ exports.register = async (req, res) => {
       otpExpires
     });
 
-    console.log("📩 Sending OTP to:", user.email);
-    console.log("🔢 OTP:", otp);
+    console.log("🟡 Before save");
 
-    const message = `Your Verification OTP is: ${otp}. It is valid for 5 minutes.`;
+    await user.save();
 
-    // ✅ FIXED EMAIL CALL
-    // await sendEmail(
-    //   user.email,
-    //   'El-Sammak Platform - OTP Verification',
-    //   message
-    // );
+    console.log("🟢 User saved");
 
     res.status(201).json({
       success: true,
-      message: 'User registered, OTP sent to email'
+      message: 'User registered'
     });
 
   } catch (err) {
-    console.error("❌ Register Error:", err);
+    console.error("❌ Register Error FULL:", err);
+
     res.status(500).json({
       success: false,
       message: 'Error in registration',
-      error: err.message
+      error: err.message,
+      stack: err.stack
     });
   }
 };
@@ -225,5 +220,41 @@ exports.resetPassword = async (req, res) => {
   } catch (err) {
     console.error(err);
     res.status(500).json({ success: false, message: 'Reset password error' });
+  }
+};
+// ================= RESEND OTP =================
+exports.resendOTP = async (req, res) => {
+  try {
+    const { email } = req.body;
+
+    const user = await User.findOne({ email });
+
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: "User not found"
+      });
+    }
+
+    const otp = Math.floor(100000 + Math.random() * 900000).toString();
+
+    user.otp = otp;
+    user.otpExpires = Date.now() + 5 * 60 * 1000;
+
+    await user.save();
+
+    console.log("🔢 NEW OTP:", otp);
+
+    res.status(200).json({
+      success: true,
+      message: "OTP resent"
+    });
+
+  } catch (err) {
+    console.error("❌ Resend OTP Error:", err);
+    res.status(500).json({
+      success: false,
+      message: "Error resending OTP"
+    });
   }
 };
