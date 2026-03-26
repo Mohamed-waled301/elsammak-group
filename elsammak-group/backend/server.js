@@ -5,7 +5,6 @@ const connectDB = require('./config/db');
 
 const app = express();
 
-// CORS
 app.use(cors({
   origin: "*",
   methods: ["GET", "POST", "PUT", "DELETE"]
@@ -24,14 +23,14 @@ app.use('/api/users', require('./routes/userRoutes'));
 app.use('/api/admin', require('./routes/adminRoutes'));
 app.use('/api/locations', require('./routes/locationRoutes'));
 
-// Connect DB وبعدين شغل السيرفر
-const startServer = async () => {
-  await connectDB();
+// شغل السيرفر الأول
+const PORT = process.env.PORT || 8080;
 
-  const PORT = process.env.PORT || 8080;
-  app.listen(PORT, '0.0.0.0', () => {
-    console.log(`Server running on port ${PORT}`);
-  });
-};
+app.listen(PORT, '0.0.0.0', () => {
+  console.log(`Server running on port ${PORT}`);
+});
 
-startServer();
+// بعد كده حاول توصل DB (من غير ما توقف السيرفر)
+connectDB().catch(err => {
+  console.error("DB connection failed ❌", err.message);
+});
