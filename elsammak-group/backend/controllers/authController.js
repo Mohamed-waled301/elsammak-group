@@ -3,7 +3,7 @@ const sendEmail = require('../utils/sendEmail');
 const crypto = require('crypto');
 const jwt = require('jsonwebtoken');
 
-// Helper to generate JWT
+// Generate JWT
 const generateToken = (id) => {
   return jwt.sign({ id }, process.env.JWT_SECRET, {
     expiresIn: process.env.JWT_EXPIRE || '30d'
@@ -14,7 +14,6 @@ const generateToken = (id) => {
 exports.register = async (req, res) => {
   try {
     console.log("🔥 Register API Hit");
-    console.log("BODY:", req.body);
 
     const { name, email, password, nationalId, phone, governorate, city } = req.body;
 
@@ -26,7 +25,7 @@ exports.register = async (req, res) => {
     const otp = Math.floor(100000 + Math.random() * 900000).toString();
     const otpExpires = Date.now() + 5 * 60 * 1000;
 
-    const user = new User({
+    const user = await User.create({
       name,
       email,
       password,
@@ -39,30 +38,21 @@ exports.register = async (req, res) => {
       otpExpires
     });
 
-    await user.save();
-
-    console.log("🟢 User saved");
-
-    // 🔥 حماية من كراش الإيميل
+    // 🔥 الإيميل مش هيكراش
     try {
-      const message = `Your OTP is: ${otp}`;
-      await sendEmail(user.email, 'OTP Verification', message);
+      await sendEmail(user.email, "OTP Verification", `Your OTP is: ${otp}`);
     } catch (e) {
       console.log("⚠️ Email failed but continue");
     }
 
     res.status(201).json({
       success: true,
-      message: 'User registered'
+      message: "User registered"
     });
 
   } catch (err) {
     console.error("❌ Register Error:", err);
-
-    res.status(500).json({
-      success: false,
-      message: err.message
-    });
+    res.status(500).json({ success: false, message: err.message });
   }
 };
 
@@ -75,10 +65,6 @@ exports.verifyOTP = async (req, res) => {
 
     if (!user) {
       return res.status(400).json({ success: false, message: 'Invalid email' });
-    }
-
-    if (user.isVerified) {
-      return res.status(400).json({ success: false, message: 'User already verified' });
     }
 
     if (user.otp !== otp || user.otpExpires < Date.now()) {
@@ -98,7 +84,7 @@ exports.verifyOTP = async (req, res) => {
 
   } catch (err) {
     console.error(err);
-    res.status(500).json({ success: false, message: 'Error verifying OTP' });
+    res.status(500).json({ success: false, message: 'Verify error' });
   }
 };
 
@@ -114,10 +100,7 @@ exports.login = async (req, res) => {
     }
 
     if (!user.isVerified) {
-      return res.status(401).json({
-        success: false,
-        message: 'Please verify your email first'
-      });
+      return res.status(401).json({ success: false, message: 'Please verify first' });
     }
 
     res.status(200).json({
@@ -138,20 +121,10 @@ exports.resendOTP = async (req, res) => {
 
     const { email } = req.body;
 
-    if (!email) {
-      return res.status(400).json({
-        success: false,
-        message: "Email is required"
-      });
-    }
-
     const user = await User.findOne({ email });
 
     if (!user) {
-      return res.status(404).json({
-        success: false,
-        message: "User not found"
-      });
+      return res.status(404).json({ success: false, message: "User not found" });
     }
 
     const otp = Math.floor(100000 + Math.random() * 900000).toString();
@@ -163,17 +136,13 @@ exports.resendOTP = async (req, res) => {
 
     console.log("🔢 NEW OTP:", otp);
 
-    return res.status(200).json({
+    res.status(200).json({
       success: true,
-      message: "OTP resent successfully"
+      message: "OTP resent"
     });
 
   } catch (err) {
-    console.error("❌ Resend OTP Error:", err);
-
-    return res.status(500).json({
-      success: false,
-      message: err.message
-    });
+    console.error("❌ Resend Error:", err);
+    res.status(500).json({ success: false, message: err.message });
   }
 };
