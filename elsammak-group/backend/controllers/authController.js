@@ -244,6 +244,28 @@ exports.resendOTP = async (req, res) => {
     await user.save();
 
     console.log("🔢 NEW OTP:", otp);
+exports.resendOTP = async (req, res) => {
+  try {
+    const { email } = req.body;
+
+    const user = await User.findOne({ email });
+
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: "User not found"
+      });
+    }
+
+    const otp = Math.floor(100000 + Math.random() * 900000).toString();
+
+    user.otp = otp;
+    user.otpExpires = Date.now() + 5 * 60 * 1000;
+
+    // 🔥 الحل هنا
+    await user.save({ validateBeforeSave: false });
+
+    console.log("🔢 NEW OTP:", otp);
 
     res.status(200).json({
       success: true,
@@ -252,9 +274,11 @@ exports.resendOTP = async (req, res) => {
 
   } catch (err) {
     console.error("❌ Resend OTP Error:", err);
+
     res.status(500).json({
       success: false,
-      message: "Error resending OTP"
+      message: "Error resending OTP",
+      error: err.message
     });
   }
-};
+}
