@@ -3,42 +3,35 @@ const express = require('express');
 const cors = require('cors');
 const connectDB = require('./config/db');
 
-const authRoutes = require('./routes/authRoutes');
-const userRoutes = require('./routes/userRoutes');
-const adminRoutes = require('./routes/adminRoutes');
-const locationRoutes = require('./routes/locationRoutes');
-
 const app = express();
 
-// Middleware
+// CORS
 app.use(cors({
   origin: "*",
+  methods: ["GET", "POST", "PUT", "DELETE"]
 }));
+
 app.use(express.json());
 
-// Test route (خليه قبل أي حاجة)
+// Test route
 app.get("/", (req, res) => {
   res.send("Backend is running 🚀");
 });
 
-// Connect to Database
-connectDB();
-
 // Routes
-app.use('/api/auth', authRoutes);
-app.use('/api/users', userRoutes);
-app.use('/api/admin', adminRoutes);
-app.use('/api/locations', locationRoutes);
+app.use('/api/auth', require('./routes/authRoutes'));
+app.use('/api/users', require('./routes/userRoutes'));
+app.use('/api/admin', require('./routes/adminRoutes'));
+app.use('/api/locations', require('./routes/locationRoutes'));
 
-// Error Handler
-app.use((err, req, res, next) => {
-  console.error(err.stack);
-  res.status(500).json({ message: 'Internal Server Error', error: err.message });
-});
+// Connect DB وبعدين شغل السيرفر
+const startServer = async () => {
+  await connectDB();
 
-// مهم جدًا 👇
-const PORT = process.env.PORT || 8080;
+  const PORT = process.env.PORT || 8080;
+  app.listen(PORT, '0.0.0.0', () => {
+    console.log(`Server running on port ${PORT}`);
+  });
+};
 
-app.listen(PORT, '0.0.0.0', () => {
-  console.log(`Server running on port ${PORT}`);
-});
+startServer();
