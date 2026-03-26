@@ -241,28 +241,7 @@ exports.resendOTP = async (req, res) => {
     user.otp = otp;
     user.otpExpires = Date.now() + 5 * 60 * 1000;
 
-    await user.save();
-
-    console.log("🔢 NEW OTP:", otp);
-exports.resendOTP = async (req, res) => {
-  try {
-    const { email } = req.body;
-
-    const user = await User.findOne({ email });
-
-    if (!user) {
-      return res.status(404).json({
-        success: false,
-        message: "User not found"
-      });
-    }
-
-    const otp = Math.floor(100000 + Math.random() * 900000).toString();
-
-    user.otp = otp;
-    user.otpExpires = Date.now() + 5 * 60 * 1000;
-
-    // 🔥 الحل هنا
+    // 🔥 مهم جدًا عشان مايكراش
     await user.save({ validateBeforeSave: false });
 
     console.log("🔢 NEW OTP:", otp);
@@ -281,4 +260,4 @@ exports.resendOTP = async (req, res) => {
       error: err.message
     });
   }
-}
+};
