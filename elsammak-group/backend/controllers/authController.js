@@ -223,9 +223,20 @@ exports.resetPassword = async (req, res) => {
   }
 };
 // ================= RESEND OTP =================
+// ================= RESEND OTP =================
 exports.resendOTP = async (req, res) => {
   try {
+    console.log("🔥 Resend OTP Hit");
+    console.log("BODY:", req.body);
+
     const { email } = req.body;
+
+    if (!email) {
+      return res.status(400).json({
+        success: false,
+        message: "Email is required"
+      });
+    }
 
     const user = await User.findOne({ email });
 
@@ -241,20 +252,23 @@ exports.resendOTP = async (req, res) => {
     user.otp = otp;
     user.otpExpires = Date.now() + 5 * 60 * 1000;
 
-    // 🔥 مهم جدًا عشان مايكراش
+    // 🔥 أهم سطر (يمنع الكراش)
     await user.save({ validateBeforeSave: false });
 
     console.log("🔢 NEW OTP:", otp);
 
-    res.status(200).json({
+    // ❌ اقفل الإيميل خالص مؤقتًا
+    // await sendEmail(...)
+
+    return res.status(200).json({
       success: true,
-      message: "OTP resent"
+      message: "OTP resent successfully"
     });
 
   } catch (err) {
-    console.error("❌ Resend OTP Error:", err);
+    console.error("❌ Resend OTP Error FULL:", err);
 
-    res.status(500).json({
+    return res.status(500).json({
       success: false,
       message: "Error resending OTP",
       error: err.message
