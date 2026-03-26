@@ -11,8 +11,15 @@ const locationRoutes = require('./routes/locationRoutes');
 const app = express();
 
 // Middleware
-app.use(cors());
+app.use(cors({
+  origin: "*",
+}));
 app.use(express.json());
+
+// Test route (خليه قبل أي حاجة)
+app.get("/", (req, res) => {
+  res.send("Backend is running 🚀");
+});
 
 // Connect to Database
 connectDB();
@@ -23,16 +30,15 @@ app.use('/api/users', userRoutes);
 app.use('/api/admin', adminRoutes);
 app.use('/api/locations', locationRoutes);
 
-// Error Handler Middleware
+// Error Handler
 app.use((err, req, res, next) => {
   console.error(err.stack);
   res.status(500).json({ message: 'Internal Server Error', error: err.message });
 });
 
-const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => {
+// مهم جدًا 👇
+const PORT = process.env.PORT || 8080;
+
+app.listen(PORT, '0.0.0.0', () => {
   console.log(`Server running on port ${PORT}`);
-});
-app.get("/", (req, res) => {
-  res.send("Backend is running 🚀");
 });
