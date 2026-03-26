@@ -1,7 +1,11 @@
 const User = require('../models/User');
-const sendEmail = require('../utils/sendEmail');
-const crypto = require('crypto');
 const jwt = require('jsonwebtoken');
+const sendEmail = require('../utils/sendEmail');
+
+// Email validation regex
+const isValidEmail = (email) => {
+  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+};
 
 // Generate JWT
 const generateToken = (id) => {
@@ -13,17 +17,34 @@ const generateToken = (id) => {
 // ================= REGISTER =================
 exports.register = async (req, res) => {
   try {
-    console.log("🔥 Register API Hit");
+    console.log("🔥 Register Hit");
 
     const { name, email, password, nationalId, phone, governorate, city } = req.body;
 
+    if (!name || !email || !password || !nationalId || !phone || !governorate || !city) {
+      return res.status(400).json({
+        success: false,
+        message: "All fields required"
+      });
+    }
+
+    // Validate email format
+    if (!isValidEmail(email)) {
+      return res.status(400).json({
+        success: false,
+        message: "Invalid email format"
+      });
+    }
+
     const userExists = await User.findOne({ email });
     if (userExists) {
-      return res.status(400).json({ success: false, message: 'User already exists' });
+      return res.status(400).json({
+        success: false,
+        message: "User already exists"
+      });
     }
 
     const otp = Math.floor(100000 + Math.random() * 900000).toString();
-    const otpExpires = Date.now() + 5 * 60 * 1000;
 
     const user = await User.create({
       name,
@@ -33,25 +54,31 @@ exports.register = async (req, res) => {
       phone,
       governorate,
       city,
-      role: 'user',
       otp,
-      otpExpires
+      otpExpires: Date.now() + 5 * 60 * 1000
     });
 
-    // 🔥 الإيميل مش هيكراش
+    console.log("✅ User created");
+
+    // Send OTP to email
     try {
-      await sendEmail(user.email, "OTP Verification", `Your OTP is: ${otp}`);
-    } catch (e) {
-      console.log("⚠️ Email failed but continue");
+      await sendEmail({
+        email: user.email,
+        subject: 'Email Verification OTP',
+        message: `Your OTP for email verification is: ${otp}\n\nThis OTP will expire in 5 minutes.`
+      });
+    } catch (emailErr) {
+      console.error("⚠️ Email sending failed:", emailErr.message);
+      // Don't fail the registration if email fails, but log it
     }
 
     res.status(201).json({
       success: true,
-      message: "User registered"
+      message: "User registered. Please check your email for OTP"
     });
 
   } catch (err) {
-    console.error("❌ Register Error:", err);
+    console.error("❌ Register Error:", err.message);
     res.status(500).json({ success: false, message: err.message });
   }
 };
@@ -61,14 +88,28 @@ exports.verifyOTP = async (req, res) => {
   try {
     const { email, otp } = req.body;
 
-    const user = await User.findOne({ email });
-
-    if (!user) {
-      return res.status(400).json({ success: false, message: 'Invalid email' });
+    if (!email || !otp) {
+      return res.status(400).json({
+        success: false,
+        message: "Email and OTP required"
+      });
     }
 
-    if (user.otp !== otp || user.otpExpires < Date.now()) {
-      return res.status(400).json({ success: false, message: 'Invalid or expired OTP' });
+    // Validate email format
+    if (!isValidEmail(email)) {
+      return res.status(400).json({
+        success: false,
+        message: "Invalid email format"
+      });
+    }
+
+    const user = await User.findOne({ email });
+
+    if (!user || user.otp !== otp || user.otpExpires < Date.now()) {
+      return res.status(400).json({
+        success: false,
+        message: "Invalid or expired OTP"
+      });
     }
 
     user.isVerified = true;
@@ -84,7 +125,7 @@ exports.verifyOTP = async (req, res) => {
 
   } catch (err) {
     console.error(err);
-    res.status(500).json({ success: false, message: 'Verify error' });
+    res.status(500).json({ success: false, message: "Verify error" });
   }
 };
 
@@ -93,14 +134,35 @@ exports.login = async (req, res) => {
   try {
     const { email, password } = req.body;
 
+    if (!email || !password) {
+      return res.status(400).json({
+        success: false,
+        message: "Email and password required"
+      });
+    }
+
+    // Validate email format
+    if (!isValidEmail(email)) {
+      return res.status(400).json({
+        success: false,
+        message: "Invalid email format"
+      });
+    }
+
     const user = await User.findOne({ email }).select('+password');
 
     if (!user || !(await user.matchPassword(password))) {
-      return res.status(401).json({ success: false, message: 'Invalid credentials' });
+      return res.status(401).json({
+        success: false,
+        message: "Invalid credentials"
+      });
     }
 
     if (!user.isVerified) {
-      return res.status(401).json({ success: false, message: 'Please verify first' });
+      return res.status(401).json({
+        success: false,
+        message: "Verify your email first"
+      });
     }
 
     res.status(200).json({
@@ -110,7 +172,7 @@ exports.login = async (req, res) => {
 
   } catch (err) {
     console.error(err);
-    res.status(500).json({ success: false, message: 'Login error' });
+    res.status(500).json({ success: false, message: "Login error" });
   }
 };
 
@@ -121,10 +183,28 @@ exports.resendOTP = async (req, res) => {
 
     const { email } = req.body;
 
+    if (!email) {
+      return res.status(400).json({
+        success: false,
+        message: "Email required"
+      });
+    }
+
+    // Validate email format
+    if (!isValidEmail(email)) {
+      return res.status(400).json({
+        success: false,
+        message: "Invalid email format"
+      });
+    }
+
     const user = await User.findOne({ email });
 
     if (!user) {
-      return res.status(404).json({ success: false, message: "User not found" });
+      return res.status(404).json({
+        success: false,
+        message: "User not found"
+      });
     }
 
     const otp = Math.floor(100000 + Math.random() * 900000).toString();
@@ -134,15 +214,30 @@ exports.resendOTP = async (req, res) => {
 
     await user.save({ validateBeforeSave: false });
 
-    console.log("🔢 NEW OTP:", otp);
+    console.log("🔢 OTP:", otp);
+
+    // Send OTP to email
+    try {
+      await sendEmail({
+        email: user.email,
+        subject: 'OTP Resend - Email Verification',
+        message: `Your new OTP for email verification is: ${otp}\n\nThis OTP will expire in 5 minutes.`
+      });
+    } catch (emailErr) {
+      console.error("⚠️ Email sending failed:", emailErr.message);
+      // Still return success as OTP was generated, but log the email failure
+    }
 
     res.status(200).json({
       success: true,
-      message: "OTP resent"
+      message: "OTP resent to your email"
     });
 
   } catch (err) {
-    console.error("❌ Resend Error:", err);
-    res.status(500).json({ success: false, message: err.message });
+    console.error("❌ Resend Error:", err.message);
+    res.status(500).json({
+      success: false,
+      message: err.message
+    });
   }
 };
