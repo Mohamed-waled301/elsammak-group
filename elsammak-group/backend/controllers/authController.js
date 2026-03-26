@@ -39,11 +39,17 @@ exports.register = async (req, res) => {
       otpExpires
     });
 
-    console.log("🟡 Before save");
-
     await user.save();
 
     console.log("🟢 User saved");
+
+    // 🔥 حماية من كراش الإيميل
+    try {
+      const message = `Your OTP is: ${otp}`;
+      await sendEmail(user.email, 'OTP Verification', message);
+    } catch (e) {
+      console.log("⚠️ Email failed but continue");
+    }
 
     res.status(201).json({
       success: true,
@@ -51,13 +57,11 @@ exports.register = async (req, res) => {
     });
 
   } catch (err) {
-    console.error("❌ Register Error FULL:", err);
+    console.error("❌ Register Error:", err);
 
     res.status(500).json({
       success: false,
-      message: 'Error in registration',
-      error: err.message,
-      stack: err.stack
+      message: err.message
     });
   }
 };
@@ -89,7 +93,6 @@ exports.verifyOTP = async (req, res) => {
 
     res.status(200).json({
       success: true,
-      message: 'User verified successfully',
       token: generateToken(user._id)
     });
 
@@ -104,22 +107,9 @@ exports.login = async (req, res) => {
   try {
     const { email, password } = req.body;
 
-    if (!email || !password) {
-      return res.status(400).json({
-        success: false,
-        message: 'Please provide email and password'
-      });
-    }
-
     const user = await User.findOne({ email }).select('+password');
 
-    if (!user) {
-      return res.status(401).json({ success: false, message: 'Invalid credentials' });
-    }
-
-    const isMatch = await user.matchPassword(password);
-
-    if (!isMatch) {
+    if (!user || !(await user.matchPassword(password))) {
       return res.status(401).json({ success: false, message: 'Invalid credentials' });
     }
 
@@ -141,93 +131,10 @@ exports.login = async (req, res) => {
   }
 };
 
-// ================= FORGOT PASSWORD =================
-exports.forgotPassword = async (req, res) => {
-  try {
-    console.log("🔥 FORGOT PASSWORD HIT");
-
-    const user = await User.findOne({ email: req.body.email });
-
-    if (!user) {
-      return res.status(404).json({
-        success: false,
-        message: 'There is no user with that email'
-      });
-    }
-
-    const resetToken = crypto.randomBytes(20).toString('hex');
-
-    user.resetToken = crypto.createHash('sha256').update(resetToken).digest('hex');
-    user.resetTokenExpires = Date.now() + 10 * 60 * 1000;
-
-    await user.save({ validateBeforeSave: false });
-
-    const resetUrl = `${process.env.FRONTEND_URL}/reset-password/${resetToken}`;
-
-    const message = `Reset your password using this link:\n\n${resetUrl}`;
-
-    console.log("📧 قبل الإرسال");
-
-    await sendEmail(
-      user.email,
-      'Password Reset Token',
-      message
-    );
-
-    console.log("📧 بعد الإرسال");
-
-    res.status(200).json({
-      success: true,
-      message: 'Email sent'
-    });
-
-  } catch (err) {
-    console.error("❌ Forgot Error:", err);
-    res.status(500).json({
-      success: false,
-      message: 'Email could not be sent'
-    });
-  }
-};
-// ================= RESET PASSWORD =================
-exports.resetPassword = async (req, res) => {
-  try {
-    const resetPasswordToken = crypto
-      .createHash('sha256')
-      .update(req.params.resettoken)
-      .digest('hex');
-
-    const user = await User.findOne({
-      resetToken: resetPasswordToken,
-      resetTokenExpires: { $gt: Date.now() }
-    });
-
-    if (!user) {
-      return res.status(400).json({ success: false, message: 'Invalid token' });
-    }
-
-    user.password = req.body.password;
-    user.resetToken = undefined;
-    user.resetTokenExpires = undefined;
-
-    await user.save();
-
-    res.status(200).json({
-      success: true,
-      token: generateToken(user._id)
-    });
-
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ success: false, message: 'Reset password error' });
-  }
-};
-// ================= RESEND OTP =================
 // ================= RESEND OTP =================
 exports.resendOTP = async (req, res) => {
   try {
     console.log("🔥 Resend OTP Hit");
-    console.log("BODY:", req.body);
 
     const { email } = req.body;
 
@@ -252,13 +159,9 @@ exports.resendOTP = async (req, res) => {
     user.otp = otp;
     user.otpExpires = Date.now() + 5 * 60 * 1000;
 
-    // 🔥 أهم سطر (يمنع الكراش)
     await user.save({ validateBeforeSave: false });
 
     console.log("🔢 NEW OTP:", otp);
-
-    // ❌ اقفل الإيميل خالص مؤقتًا
-    // await sendEmail(...)
 
     return res.status(200).json({
       success: true,
@@ -266,12 +169,11 @@ exports.resendOTP = async (req, res) => {
     });
 
   } catch (err) {
-    console.error("❌ Resend OTP Error FULL:", err);
+    console.error("❌ Resend OTP Error:", err);
 
     return res.status(500).json({
       success: false,
-      message: "Error resending OTP",
-      error: err.message
+      message: err.message
     });
   }
 };
