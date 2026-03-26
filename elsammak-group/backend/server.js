@@ -4,21 +4,17 @@ const cors = require('cors');
 
 const app = express();
 
-// 🔥 الحل القاطع
-app.use((req, res, next) => {
-  res.header("Access-Control-Allow-Origin", "*");
-  res.header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
-  res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept, Authorization");
-  next();
-});
+// ✅ CORS مظبوط 100%
+app.use(cors({
+  origin: "*",
+  methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+  allowedHeaders: ["Content-Type", "Authorization"]
+}));
 
-app.use(cors());
+// 🔥 مهم للـ preflight
+app.options("*", cors());
+
 app.use(express.json());
-
-// test
-app.get("/", (req, res) => {
-  res.send("Backend is running 🚀");
-});
 
 // routes
 app.use('/api/auth', require('./routes/authRoutes'));
