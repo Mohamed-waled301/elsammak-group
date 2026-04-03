@@ -9,7 +9,7 @@ const { sendOtpEmail } = require('../utils/sendEmail');
 const { signAuthToken, isAuthConfigured } = require('../utils/authToken');
 
 const egyptRegions = require('../data/egyptRegions.json');
-const { validateEgyptianNationalId } = require('../utils/egyptNationalId');
+const { parseNationalID, GOV_CODE_TO_NAME } = require('../utils/nationalId');
 
 const governorateToDistricts = {};
 for (const row of egyptRegions) {
@@ -73,7 +73,20 @@ async function register(req, res) {
     if (parsed.error) {
       return res.status(400).json({ success: false, message: parsed.error });
     }
-    const { name, email, password, phone, nationalId, governorate, city, birthDate, gender } = parsed.values;
+    const { name, email, password, phone, nationalId, governorate, city } = parsed.values;
+
+    const nidResult = parseNationalID(nationalId);
+    if (!nidResult.valid) {
+      return res.status(400).json({ message: nidResult.message });
+    }
+
+    const { birthDate, gender, governorateCode } = nidResult.data;
+    const governorateFromId = GOV_CODE_TO_NAME[governorateCode];
+    if (governorate !== governorateFromId) {
+      return res.status(400).json({
+        message: 'Governorate must match the National ID (place of birth code).',
+      });
+    }
 
     const nationalIdTaken = await User.findOne({
       role: 'client',
@@ -117,6 +130,7 @@ async function register(req, res) {
       existing.nationalId = nationalId;
       existing.birthDate = birthDate;
       existing.gender = gender;
+      existing.governorateCode = governorateCode;
       existing.governorate = governorate;
       existing.city = city;
       existing.passwordHash = await bcrypt.hash(password, BCRYPT_ROUNDS);
@@ -132,6 +146,7 @@ async function register(req, res) {
         nationalId,
         birthDate,
         gender,
+        governorateCode,
         governorate,
         city,
         emailVerified: false,
@@ -158,9 +173,7 @@ async function register(req, res) {
 
     return res.status(201).json({
       success: true,
-      message: emailConfigured
-        ? 'Registration successful. Check your email for the verification code.'
-        : 'Account created. Email is not configured on the server; contact support to complete verification.',
+      message: 'User created successfully',
     });
   } catch (err) {
     if (err?.code === 11000 && err.keyPattern && Object.prototype.hasOwnProperty.call(err.keyPattern, 'nationalId')) {
@@ -228,15 +241,7 @@ function validateClientRegisterBody(body) {
   if (!nationalIdRaw) {
     return { error: 'National ID is required.' };
   }
-  if (!/^\d{14}$/.test(nationalIdRaw)) {
-    return { error: 'National ID must be exactly 14 digits.' };
-  }
   const nationalId = nationalIdRaw;
-  const nidCheck = validateEgyptianNationalId(nationalId);
-  if (!nidCheck.ok) {
-    return { error: nidCheck.error };
-  }
-  const { birthDateISO, gender, governorateName: govFromId } = nidCheck.parsed;
   if (!governorate) {
     return { error: 'Governorate is required.' };
   }
@@ -249,11 +254,6 @@ function validateClientRegisterBody(body) {
   if (!isValidEgyptGovernorateDistrict(governorate, city)) {
     return { error: 'Invalid governorate or district selection.' };
   }
-  if (governorate !== govFromId) {
-    return {
-      error: 'Governorate must match the National ID (place of birth code).',
-    };
-  }
   return {
     values: {
       name,
@@ -263,8 +263,6 @@ function validateClientRegisterBody(body) {
       nationalId,
       governorate,
       city,
-      birthDate: birthDateISO,
-      gender,
     },
   };
 }

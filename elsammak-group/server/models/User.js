@@ -18,6 +18,8 @@ const userSchema = new mongoose.Schema(
     /** YYYY-MM-DD from validated National ID */
     birthDate: { type: String, default: '' },
     gender: { type: String, default: '' },
+    /** Two-digit civil registry governorate code from National ID (SS). */
+    governorateCode: { type: String, default: '' },
     governorate: { type: String, default: '' },
     city: { type: String, default: '' },
     emailVerified: { type: Boolean, default: false },
