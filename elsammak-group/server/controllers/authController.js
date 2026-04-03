@@ -69,21 +69,32 @@ async function register(req, res) {
       return res.status(503).json({ success: false, message: 'Server authentication is not configured' });
     }
 
-    const parsed = validateClientRegisterBody(req.body);
+    const { nationalId: nationalIdFromBody } = req.body || {};
+    console.log('Received nationalId:', nationalIdFromBody);
+
+    const nationalId = String(nationalIdFromBody ?? '').replace(/\s/g, '');
+    const result = parseNationalID(nationalId);
+    console.log('Validation result:', result);
+
+    if (!result.valid) {
+      return res.status(400).json({
+        success: false,
+        message: result.message || 'Invalid national ID',
+      });
+    }
+
+    const parsed = validateClientRegisterBody({ ...(req.body || {}), nationalId });
     if (parsed.error) {
       return res.status(400).json({ success: false, message: parsed.error });
     }
-    const { name, email, password, phone, nationalId, governorate, city } = parsed.values;
 
-    const nidResult = parseNationalID(nationalId);
-    if (!nidResult.valid) {
-      return res.status(400).json({ message: nidResult.message });
-    }
+    const { birthDate, gender, governorateCode } = result.data;
+    const { name, email, password, phone, governorate, city } = parsed.values;
 
-    const { birthDate, gender, governorateCode } = nidResult.data;
     const governorateFromId = GOV_CODE_TO_NAME[governorateCode];
     if (governorate !== governorateFromId) {
       return res.status(400).json({
+        success: false,
         message: 'Governorate must match the National ID (place of birth code).',
       });
     }

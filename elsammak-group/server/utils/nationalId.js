@@ -46,6 +46,9 @@ function isValidCalendarDate(year, month, day) {
 }
 
 /**
+ * Always returns either `{ valid: true, data: {...} }` or `{ valid: false, message: string }`.
+ * Does not validate the checksum digit (last digit).
+ *
  * @param {string} nationalId
  * @returns {{ valid: true, data: { fullYear: number, birthDate: string, governorateCode: string, gender: 'male'|'female' } } | { valid: false, message: string }}
  */
@@ -53,7 +56,10 @@ function parseNationalID(nationalId) {
   const id = String(nationalId ?? '').replace(/\s/g, '');
 
   if (!/^\d{14}$/.test(id)) {
-    return { valid: false, message: 'National ID must be exactly 14 digits.' };
+    return {
+      valid: false,
+      message: 'National ID must be exactly 14 digits.',
+    };
   }
 
   const c = id[0];
@@ -87,15 +93,14 @@ function parseNationalID(nationalId) {
   const gender = genderDigit % 2 === 1 ? 'male' : 'female';
   const birthDate = `${fullYear}-${String(month).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
 
-  return {
-    valid: true,
-    data: {
-      fullYear,
-      birthDate,
-      governorateCode,
-      gender,
-    },
+  const data = {
+    fullYear,
+    birthDate,
+    governorateCode,
+    gender,
   };
+
+  return { valid: true, data };
 }
 
 module.exports = {
