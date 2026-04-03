@@ -1,0 +1,12 @@
+{
+  "name": "babaroot",
+  "private": true,
+  "description": "Run npm scripts from repo root; app lives in elsammak-group/",
+  "scripts": {
+    "postinstall": "npm install --prefix elsammak-group",
+    "dev": "npm run dev --prefix elsammak-group",
+    "build": "npm run build --prefix elsammak-group",
+    "preview": "npm run preview --prefix elsammak-group",
+    "start:server": "npm run start:server --prefix elsammak-group"
+  }
+}

@@ -1,0 +1,476 @@
+[
+  {
+    "governorate": "Alexandria",
+    "districts": [
+      "Abu Qir",
+      "Agami",
+      "Ameria",
+      "Amreya",
+      "Asafra",
+      "Attarin",
+      "Bakos",
+      "Borg El Arab",
+      "Burj Al Arab",
+      "El Labban",
+      "El Max",
+      "Gleem",
+      "Karmouz",
+      "King Mariout",
+      "Loran",
+      "Mandara",
+      "Miami",
+      "Moharam Bek",
+      "Montaza",
+      "Other",
+      "Roushdy",
+      "San Stefano",
+      "Seyouf",
+      "Sidi Bishr",
+      "Sidi Gaber",
+      "Smouha",
+      "Sporting",
+      "Stanley",
+      "Victoria"
+    ]
+  },
+  {
+    "governorate": "Aswan",
+    "districts": [
+      "Abu Simbel",
+      "Aswan City",
+      "Daraw",
+      "Edfu",
+      "El Sebou",
+      "Kalabsha",
+      "Kom Ombo",
+      "Kom Ombo (Markaz)",
+      "Nasr Nubia",
+      "Other"
+    ]
+  },
+  {
+    "governorate": "Asyut",
+    "districts": [
+      "Abnoub",
+      "Abu Tig",
+      "Asyut City",
+      "Dayrout",
+      "El Badari",
+      "El Qusiya",
+      "Manfalut",
+      "Other",
+      "Sahel Selim",
+      "Sedfa"
+    ]
+  },
+  {
+    "governorate": "Beheira",
+    "districts": [
+      "Abu El Matamir",
+      "Abu Hummus",
+      "Badr",
+      "Damanhur",
+      "Delengat",
+      "Edku",
+      "El Delengat",
+      "Etay Baroud",
+      "Housh Eissa",
+      "Itay El Baroud",
+      "Kafr El Dawwar",
+      "Kom Hamada",
+      "Mahmoudiyah",
+      "Nubariya",
+      "Other",
+      "Rashid (Rosetta)",
+      "Wadi El Natrun"
+    ]
+  },
+  {
+    "governorate": "Beni Suef",
+    "districts": [
+      "Beni Suef City",
+      "Biba",
+      "El Wasta",
+      "Ihnasia",
+      "Nasser",
+      "Other",
+      "Sumusta"
+    ]
+  },
+  {
+    "governorate": "Cairo",
+    "districts": [
+      "15 May City",
+      "15th of May",
+      "Abbassia",
+      "Ain Shams",
+      "Badr City",
+      "Bulaq",
+      "Downtown Cairo",
+      "El Marg",
+      "El Matareya",
+      "El Mokattam",
+      "El Mosky",
+      "El Nozha",
+      "El Obour (Greater Cairo)",
+      "El Rehab",
+      "El Salam City",
+      "El Sayeda Aisha",
+      "El Shorouk",
+      "El Tebbin",
+      "El Zawya El Hamra",
+      "Garden City",
+      "Heliopolis",
+      "Helwan",
+      "Maadi",
+      "Maasara",
+      "Madinet Nasr",
+      "Nasr City",
+      "New Cairo",
+      "Other",
+      "Rod El Farag",
+      "Sayeda Zeinab",
+      "Shubra",
+      "Tora",
+      "Zamalek"
+    ]
+  },
+  {
+    "governorate": "Dakahlia",
+    "districts": [
+      "Aga",
+      "Belqas",
+      "Dekernes",
+      "El Gamalia",
+      "El Manzala",
+      "El Matarya",
+      "El Senbellawein",
+      "Gamasa",
+      "Mahalet Damana",
+      "Mansoura",
+      "Manzala",
+      "Mit Ghamr",
+      "Mit Salsil",
+      "Nabroh",
+      "Other",
+      "Sherbin",
+      "Sinbillawain",
+      "Talkha",
+      "Tama El Amdeed"
+    ]
+  },
+  {
+    "governorate": "Damietta",
+    "districts": [
+      "Damietta City",
+      "Ezbet El Borg",
+      "Faraskur",
+      "Kafr Saad",
+      "New Damietta",
+      "Other",
+      "Ras El Bar",
+      "Zarqa"
+    ]
+  },
+  {
+    "governorate": "Fayoum",
+    "districts": [
+      "Etsa",
+      "Fayoum City",
+      "Ibsheway",
+      "Other",
+      "Sinnuris",
+      "Tamiya",
+      "Yousef El Seddik"
+    ]
+  },
+  {
+    "governorate": "Gharbia",
+    "districts": [
+      "Basyoun",
+      "El Mahalla El Baharya",
+      "El Mahalla El Kubra (Markaz)",
+      "El Santa",
+      "Kafr El Zayat",
+      "Mahalla El Kubra",
+      "Nabra",
+      "Other",
+      "Qutur",
+      "Samannoud",
+      "Tanta",
+      "Zefta"
+    ]
+  },
+  {
+    "governorate": "Giza",
+    "districts": [
+      "6th October City",
+      "Abu Nomros",
+      "Abu Rawash",
+      "Agouza",
+      "Atfih",
+      "Awsim",
+      "Badrashin",
+      "Baragil",
+      "Dokki",
+      "Faisal",
+      "Hadayek October",
+      "Haram",
+      "Hawamdiya",
+      "Imbaba",
+      "Kerdasa",
+      "Mohandessin",
+      "Nazlet El Samman",
+      "Omraneya",
+      "Other",
+      "Saft El Laban",
+      "Saqara",
+      "Sheikh Zayed",
+      "Talbiya",
+      "Umm El Tagamm",
+      "Warraq"
+    ]
+  },
+  {
+    "governorate": "Ismailia",
+    "districts": [
+      "Abu Sultan",
+      "Abu Suwir",
+      "El Tal El Kebir",
+      "Fayed",
+      "Ismailia City",
+      "Other",
+      "Qantara East",
+      "Qantara West",
+      "Qassassin",
+      "Tal El Kebir"
+    ]
+  },
+  {
+    "governorate": "Kafr El Sheikh",
+    "districts": [
+      "Baltim",
+      "Bella",
+      "Brolos",
+      "Desouk",
+      "El Hamool",
+      "El Hamoul",
+      "El Riyad",
+      "Fuwa",
+      "Kafr El Sheikh",
+      "Metoubes",
+      "Other",
+      "Qallin",
+      "Sidi Ghazi",
+      "Sidi Salem"
+    ]
+  },
+  {
+    "governorate": "Luxor",
+    "districts": [
+      "Armant",
+      "El Bayadiya",
+      "El Tod",
+      "Esna",
+      "Karnak",
+      "Luxor City",
+      "Other",
+      "Thebes (West Bank)",
+      "Tod"
+    ]
+  },
+  {
+    "governorate": "Matrouh",
+    "districts": [
+      "El Alamein",
+      "El Alamein West",
+      "El Dabaa",
+      "El Negaila",
+      "Marsa Matrouh",
+      "Negila",
+      "Other",
+      "Salloum",
+      "Sidi Barrani",
+      "Siwa"
+    ]
+  },
+  {
+    "governorate": "Minya",
+    "districts": [
+      "Abu Qurqas",
+      "Beni Mazar",
+      "Deir Mawas",
+      "Maghagha",
+      "Mallawi",
+      "Matai",
+      "Minya City",
+      "Other",
+      "Samalout"
+    ]
+  },
+  {
+    "governorate": "Monufia",
+    "districts": [
+      "Ashmoun",
+      "Berket El Saba",
+      "El Bagour",
+      "Menouf",
+      "Other",
+      "Quesna",
+      "Sadat City",
+      "Sers El Lyan",
+      "Shebin El Kom (Markaz)",
+      "Shibin El Kom",
+      "Tala"
+    ]
+  },
+  {
+    "governorate": "New Valley",
+    "districts": [
+      "Balat",
+      "Baris",
+      "Dakhla",
+      "El Kharga",
+      "Farafra",
+      "Kharga",
+      "Other",
+      "Paris Oasis"
+    ]
+  },
+  {
+    "governorate": "North Sinai",
+    "districts": [
+      "Arish",
+      "Bir El Abd",
+      "Central Sinai",
+      "El Hassana",
+      "Nakhl",
+      "Other",
+      "Rafah",
+      "Sheikh Zuweid"
+    ]
+  },
+  {
+    "governorate": "Port Said",
+    "districts": [
+      "Arab District",
+      "Dawahy District",
+      "East Port Said",
+      "Ganayen District",
+      "Manakh District",
+      "Other",
+      "Port Fouad",
+      "West District"
+    ]
+  },
+  {
+    "governorate": "Qalyubia",
+    "districts": [
+      "Bahtim",
+      "Banha",
+      "El Khanka",
+      "El Obour City",
+      "El Ubour",
+      "Khanka",
+      "Khosous",
+      "Meet Okba",
+      "Mostorod",
+      "Nahda",
+      "Orabi",
+      "Other",
+      "Qaha",
+      "Qalyub",
+      "Shebin El Qanater",
+      "Shubra El Kheima",
+      "Toukh"
+    ]
+  },
+  {
+    "governorate": "Qena",
+    "districts": [
+      "Abu Tesht",
+      "Dishna",
+      "Farshout",
+      "Nag Hammadi",
+      "Nagada",
+      "Naqada",
+      "Other",
+      "Qena City",
+      "Qift"
+    ]
+  },
+  {
+    "governorate": "Red Sea",
+    "districts": [
+      "El Gouna",
+      "El Qoseir",
+      "Hurghada",
+      "Marsa Alam",
+      "Other",
+      "Ras Ghareb",
+      "Safaga",
+      "Safaga Port"
+    ]
+  },
+  {
+    "governorate": "Sharqia",
+    "districts": [
+      "10th of Ramadan City",
+      "Abu Hammad",
+      "Abu Kebir",
+      "Belbeis",
+      "Derb Negm",
+      "El Husseiniya",
+      "El Ibrahimiya",
+      "El Salhiya",
+      "Faqous",
+      "Hehia",
+      "Hihya",
+      "Mashtool El Souk",
+      "Minya al-Qamh",
+      "New Salhiya",
+      "Other",
+      "Qenayat",
+      "San El Hagar",
+      "Zagazig"
+    ]
+  },
+  {
+    "governorate": "Sohag",
+    "districts": [
+      "Akhmim",
+      "Dar El Salam",
+      "El Balyana",
+      "Girga",
+      "Other",
+      "Saqulta",
+      "Sohag City",
+      "Tahta",
+      "Tama"
+    ]
+  },
+  {
+    "governorate": "South Sinai",
+    "districts": [
+      "Dahab",
+      "Nuweiba",
+      "Other",
+      "Saint Catherine",
+      "Sharm El Sheikh",
+      "Taba",
+      "Tor Sinai"
+    ]
+  },
+  {
+    "governorate": "Suez",
+    "districts": [
+      "Arbaeen",
+      "Ataka",
+      "Faisal",
+      "Ganayen",
+      "Other",
+      "Suez City",
+      "Suez Port"
+    ]
+  }
+]
