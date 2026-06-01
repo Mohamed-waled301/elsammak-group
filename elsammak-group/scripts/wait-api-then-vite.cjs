@@ -23,14 +23,15 @@ function readPort() {
 function startVite(port) {
   const env = {
     ...process.env,
-    VITE_API_URL: `http://127.0.0.1:${port}`,
+    // Client uses same-origin /api + Vite proxy (see client/src/config/api.ts).
+    VITE_DEV_API_PORT: String(port),
+    VITE_API_URL: '',
   };
-  // Use npm workspace so Vite resolves whether hoisted to root or under client/
-  const npmCmd = isWin ? 'npm.cmd' : 'npm';
-  const child = spawn(npmCmd, ['run', 'dev', '-w', 'client'], {
+  const child = spawn('npm', ['run', 'dev', '-w', 'client'], {
     cwd: root,
     env,
     stdio: 'inherit',
+    shell: isWin,
   });
   child.on('exit', (code, signal) => {
     if (signal) process.kill(process.pid, signal);

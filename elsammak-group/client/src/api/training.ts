@@ -1,22 +1,18 @@
-import { getApiBaseUrl } from '../config/api';
-
-function trainingBookingUrl() {
-  const base = getApiBaseUrl();
-  return base ? `${base.replace(/\/$/, '')}/api/training/booking` : '/api/training/booking';
-}
+import { apiUrl } from '../config/api';
 
 export type TrainingBookingPayload = {
   name: string;
   email: string;
   phone: string;
   course: string;
+  attendanceMode: 'remote' | 'physical';
   bookingDate: string;
   governorate: string;
   city: string;
 };
 
 export async function submitTrainingBooking(payload: TrainingBookingPayload) {
-  const res = await fetch(trainingBookingUrl(), {
+  const res = await fetch(apiUrl('/api/training/booking'), {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(payload),

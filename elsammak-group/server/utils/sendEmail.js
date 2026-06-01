@@ -179,6 +179,8 @@ async function sendTrainingBookingConfirmation({
   name,
   courseLabelEn,
   courseLabelAr,
+  attendanceLabelEn,
+  attendanceLabelAr,
   bookingDate,
   phone,
   governorate,
@@ -193,6 +195,8 @@ async function sendTrainingBookingConfirmation({
   const courseAr = escapeHtml(courseLabelAr);
   const date = escapeHtml(bookingDate);
   const ph = escapeHtml(phone || '—');
+  const attEn = escapeHtml(attendanceLabelEn || '—');
+  const attAr = escapeHtml(attendanceLabelAr || '—');
   const gov = escapeHtml(governorate || '—');
   const c = escapeHtml(city || '—');
 
@@ -213,6 +217,8 @@ async function sendTrainingBookingConfirmation({
           <table role="presentation" width="100%" style="border-collapse:collapse;background:#f8fafc;border-radius:8px;">
             <tr><td style="padding:12px 16px;border-bottom:1px solid #e2e8f0;font-size:12px;font-weight:700;color:#64748b;text-transform:uppercase;">Program</td></tr>
             <tr><td style="padding:8px 16px 14px;color:#0f172a;font-size:15px;">${courseEn} <span style="color:#64748b;font-size:13px;">/ ${courseAr}</span></td></tr>
+            <tr><td style="padding:12px 16px;border-top:1px solid #e2e8f0;font-size:12px;font-weight:700;color:#64748b;text-transform:uppercase;">Attendance</td></tr>
+            <tr><td style="padding:8px 16px 14px;color:#0f172a;font-size:15px;">${attEn} <span style="color:#64748b;font-size:13px;">/ ${attAr}</span></td></tr>
             <tr><td style="padding:12px 16px;border-top:1px solid #e2e8f0;font-size:12px;font-weight:700;color:#64748b;text-transform:uppercase;">Preferred date</td></tr>
             <tr><td style="padding:8px 16px 14px;color:#003B5C;font-size:18px;font-weight:700;">${date}</td></tr>
             <tr><td style="padding:12px 16px;border-top:1px solid #e2e8f0;font-size:12px;font-weight:700;color:#64748b;text-transform:uppercase;">Contact</td></tr>
@@ -231,6 +237,7 @@ async function sendTrainingBookingConfirmation({
     `Hello ${name},`,
     '',
     `Program: ${courseLabelEn} (${courseLabelAr})`,
+    `Attendance: ${attendanceLabelEn} (${attendanceLabelAr})`,
     `Preferred date: ${bookingDate}`,
     `Phone: ${phone || '—'}`,
     `Governorate / City: ${governorate || '—'} / ${city || '—'}`,

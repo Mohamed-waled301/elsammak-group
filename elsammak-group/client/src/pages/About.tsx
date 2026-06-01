@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import { Target, Compass, Award, Shield } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
-import { getApiBaseUrl } from '../config/api';
+import { apiUrl } from '../config/api';
 
 /** Build URL for files in Vite `public/` (required when `base` is `./` in vite.config). */
 function publicAssetUrl(pathFromPublic: string): string {
@@ -54,8 +54,7 @@ function AboutPageVideo() {
     let cancelled = false;
     (async () => {
       try {
-        const base = getApiBaseUrl();
-        const res = await fetch(`${base}/api/media/first-video`);
+        const res = await fetch(apiUrl('/api/media/first-video'));
         const data = (await res.json()) as { url?: string | null };
         const u = typeof data.url === 'string' && data.url.trim() ? data.url.trim() : null;
         if (!cancelled && u) setApiPath(u);

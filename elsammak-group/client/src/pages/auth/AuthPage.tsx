@@ -221,7 +221,7 @@ const AuthPage = () => {
               {isRTL ? 'مجموعة السماك' : 'Elsamak Group'}
             </div>
             <div className="text-[10px] font-medium uppercase tracking-wide text-gray-400">
-              {isRTL ? 'قانوني • محاسبي • تحليلي' : 'Legal • Accounting • Analytics'}
+              {t('home.tagline')}
             </div>
           </div>
         </div>

@@ -20,7 +20,6 @@ import Profile from './pages/Profile';
 import OrganizationStructure from './pages/OrganizationStructure';
 import AdminDashboard from './pages/admin/AdminDashboard';
 import ClientDetails from './pages/admin/ClientDetails';
-import AdminProfile from './pages/admin/AdminProfile';
 import PasswordResetOtpFlow from './pages/auth/PasswordResetOtpFlow';
 
 // Protected Route Component
@@ -100,7 +99,7 @@ function AppRoutes() {
  <Routes>
  <Route path="dashboard" element={<AdminDashboard />} />
             <Route path="users/:id" element={<ClientDetails />} />
-            <Route path="profile" element={<AdminProfile />} />
+            <Route path="profile" element={<Navigate to="/admin/dashboard" replace />} />
  <Route path="*" element={<Navigate to="/admin/dashboard" replace />} />
  </Routes>
  </MainLayout>
@@ -123,7 +122,16 @@ function AppRoutes() {
  <Route path="/contact" element={<Contact />} />
 <Route path="/organization-structure" element={<OrganizationStructure />} />
  <Route path="/booking" element={<Booking />} />
- <Route path="/profile" element={<Profile />} />
+ <Route
+              path="/profile"
+              element={
+                user?.role === 'admin' ? (
+                  <Navigate to="/admin/dashboard" replace />
+                ) : (
+                  <Profile />
+                )
+              }
+            />
  <Route path="*" element={<Navigate to="/" replace />} />
  </Routes>
  </MainLayout>

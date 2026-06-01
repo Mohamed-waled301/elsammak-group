@@ -1,3 +1,4 @@
+import fs from 'node:fs'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { defineConfig, loadEnv } from 'vite'
@@ -5,9 +6,28 @@ import react from '@vitejs/plugin-react'
 import tailwindcss from '@tailwindcss/vite'
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
+const repoRoot = path.resolve(__dirname, '..')
 
-/** Default dev proxy target; mirror `DEFAULT_API_BASE_URL` in `src/config/api.ts`. */
-const DEFAULT_API_TARGET = 'https://server-production-1c6f5.up.railway.app'
+function readDevApiPort(): number {
+  const fromEnv = Number(process.env.VITE_DEV_API_PORT)
+  if (Number.isFinite(fromEnv) && fromEnv > 0) return fromEnv
+  try {
+    const s = fs.readFileSync(path.join(repoRoot, '.dev-api-port'), 'utf8').trim()
+    const n = Number(s)
+    if (Number.isFinite(n) && n > 0) return n
+  } catch {
+    /* file not written yet */
+  }
+  return 5000
+}
+
+/** Local Express in dev; production preview can set VITE_API_URL. */
+function resolveDevProxyTarget(env: Record<string, string>): string {
+  const explicit = (env.VITE_API_URL || '').trim()
+  if (explicit) return explicit.replace(/\/$/, '')
+  const port = readDevApiPort()
+  return `http://127.0.0.1:${port}`
+}
 
 /**
  * Merge repo root + client/.env so VITE_* works from either place (npm workspaces / monorepo).
@@ -21,7 +41,7 @@ function mergedEnv(mode: string) {
 
 export default defineConfig(({ mode }) => {
   const env = mergedEnv(mode)
-  const apiTarget = (env.VITE_API_URL || DEFAULT_API_TARGET).replace(/\/$/, '')
+  const apiTarget = mode === 'development' ? resolveDevProxyTarget(env) : (env.VITE_API_URL || '').trim().replace(/\/$/, '') || 'http://127.0.0.1:5000'
   const viteEnvDefine = Object.fromEntries(
     Object.entries(env)
       .filter(([key]) => key.startsWith('VITE_'))

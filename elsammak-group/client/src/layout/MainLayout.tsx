@@ -3,7 +3,7 @@ import type { ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
 import Sidebar from './Sidebar';
 import Footer from './Footer';
-import FloatingChat from '../components/common/FloatingChat';
+import FloatingSocialSidebar from '../components/common/FloatingSocialSidebar';
 
 interface MainLayoutProps {
   children: ReactNode;
@@ -31,7 +31,7 @@ const MainLayout = ({ children }: MainLayoutProps) => {
         </main>
         <Footer />
       </div>
-      <FloatingChat />
+      <FloatingSocialSidebar />
     </div>
   );
 };

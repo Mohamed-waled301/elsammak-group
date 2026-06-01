@@ -100,7 +100,7 @@ const AdminDashboard = () => {
   const downloadPdfList = async () => {
     setDownloadingPdf(true);
     try {
-      const blob = downloadClientsListPdf(
+      const blob = await downloadClientsListPdf(
         filteredUsers.map((u) => ({
           name: u.name,
           email: u.email,

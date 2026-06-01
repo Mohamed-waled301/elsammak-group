@@ -3,12 +3,7 @@ import { Mail, Phone, MapPin } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import toast from 'react-hot-toast';
 import Button from '../components/Button';
-import { getApiBaseUrl } from '../config/api';
-
-function contactApiUrl() {
-  const base = getApiBaseUrl();
-  return base ? `${base.replace(/\/$/, '')}/api/contact` : '/api/contact';
-}
+import { apiUrl } from '../config/api';
 
 const Contact = () => {
  const { t, i18n } = useTranslation();
@@ -39,7 +34,7 @@ const Contact = () => {
       const message = String(formData.get('message') || '').trim();
 
       const body = { name, email, message };
-      const url = contactApiUrl();
+      const url = apiUrl('/api/contact');
       console.log('[contact] fetch →', url, body);
 
       const response = await fetch(url, {

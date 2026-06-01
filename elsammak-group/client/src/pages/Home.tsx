@@ -1,5 +1,5 @@
 import { useTranslation } from 'react-i18next';
-import { ArrowRight, Scale, Calculator, ShieldCheck, BarChart3, GraduationCap } from 'lucide-react';
+import { ArrowRight, Scale, Calculator, BarChart3, GraduationCap } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import type { Variants } from 'framer-motion';
@@ -24,10 +24,9 @@ const Home = () => {
  const navigate = useNavigate();
 
  const services = [
- { icon: <Scale className="w-8 h-8" />, title: t('servicesItems.legal_consulting'), desc: t('servicesItems.legal_consulting_desc'), link: '/services' },
- { icon: <Calculator className="w-8 h-8" />, title: t('servicesItems.accounting_tax'), desc: t('servicesItems.accounting_tax_desc'), link: '/services' },
- { icon: <ShieldCheck className="w-8 h-8" />, title: t('servicesItems.risk_compliance'), desc: t('servicesItems.risk_compliance_desc'), link: '/services' },
- { icon: <BarChart3 className="w-8 h-8" />, title: t('servicesItems.data_analysis'), desc: t('servicesItems.data_analysis_desc'), link: '/data-analysis' },
+ { icon: <Scale className="w-8 h-8" />, title: t('servicesItems.law'), desc: t('servicesItems.law_desc'), link: '/services' },
+ { icon: <Calculator className="w-8 h-8" />, title: t('servicesItems.accounting'), desc: t('servicesItems.accounting_desc'), link: '/services' },
+ { icon: <BarChart3 className="w-8 h-8" />, title: t('servicesItems.analysis'), desc: t('servicesItems.analysis_desc'), link: '/data-analysis' },
  { icon: <GraduationCap className="w-8 h-8" />, title: t('servicesItems.training'), desc: t('servicesItems.training_desc'), link: '/training' },
  ];
 
@@ -98,7 +97,7 @@ const Home = () => {
  </motion.div>
  <motion.div 
  initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.1 }} variants={staggerContainer}
- className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"
+ className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8"
  >
  {services.map((service, idx) => (
  <motion.div 

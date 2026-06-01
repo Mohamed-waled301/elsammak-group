@@ -48,7 +48,7 @@ const ClientDetails = () => {
     if (!id || !data) return;
     setDownloading(true);
     try {
-      const blob = buildClientPdfBlob(data);
+      const blob = await buildClientPdfBlob(data);
       const url = window.URL.createObjectURL(blob);
       const a = document.createElement('a');
       a.href = url;
@@ -164,7 +164,9 @@ const ClientDetails = () => {
                     <ul className="text-sm text-gray-700 space-y-1">
                       {trainings.slice(0, 8).map((t, idx) => (
                         <li key={`${t._id || idx}`}>
-                          • {String(t.course ?? '-')} — {String(t.bookingDate ?? '-')}
+                          • {String(t.course ?? '-')}
+                          {t.attendanceMode ? ` (${String(t.attendanceMode)})` : ''} —{' '}
+                          {String(t.bookingDate ?? '-')}
                         </li>
                       ))}
                     </ul>

@@ -6,6 +6,12 @@ const trainingBookingSchema = new mongoose.Schema(
     email: { type: String, required: true, trim: true, lowercase: true },
     phone: { type: String, default: '', trim: true },
     course: { type: String, required: true, trim: true },
+    attendanceMode: {
+      type: String,
+      enum: ['remote', 'physical'],
+      required: true,
+      trim: true,
+    },
     bookingDate: { type: String, required: true, trim: true },
     governorate: { type: String, default: '', trim: true },
     city: { type: String, default: '', trim: true },

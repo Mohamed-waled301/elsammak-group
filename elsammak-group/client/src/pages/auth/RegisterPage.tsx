@@ -160,6 +160,25 @@ const RegisterPage = () => {
       </div>
 
       <div className="mb-8 text-center">
+        <div className="mb-4 flex items-center justify-center gap-3">
+          <img
+            src="/company-logo.png"
+            alt="Elsamak Group"
+            className="h-12 w-12 shrink-0 object-contain drop-shadow-sm"
+            onError={(e) => {
+              e.currentTarget.onerror = null;
+              e.currentTarget.src = '/favicon.svg';
+            }}
+          />
+          <div className="min-w-0 text-left rtl:text-right">
+            <div className="text-lg font-black leading-tight tracking-tight text-[#003B5C]">
+              {isRTL ? 'مجموعة السماك' : 'Elsamak Group'}
+            </div>
+            <div className="text-[10px] font-medium uppercase tracking-wide text-gray-400">
+              {t('home.tagline')}
+            </div>
+          </div>
+        </div>
         <h1 className="text-2xl font-bold text-[#003B5C] md:text-3xl">
           {isRTL ? 'إنشاء حساب عميل' : 'Create your account'}
         </h1>

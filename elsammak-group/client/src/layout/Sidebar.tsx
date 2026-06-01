@@ -4,9 +4,9 @@ import { useTranslation } from 'react-i18next';
 import { useLanguage } from '../context/LanguageContext';
 import { useAuth } from '../context/AuthContext';
 import {
-  Globe, Menu, X, LogOut, Settings, Shield,
+  Globe, Menu, X, LogOut, Settings,
   Home, Info, Briefcase, BarChart2, BookOpen, Phone,
-  ChevronRight, ChevronLeft, Building2, User
+  ChevronRight, ChevronLeft, Building2, User, LayoutDashboard
 } from 'lucide-react';
 import clsx from 'clsx';
 
@@ -33,9 +33,16 @@ const Sidebar = ({ isCollapsed, setIsCollapsed }: SidebarProps) => {
     { name: t('nav.contact', 'Contact'), path: '/contact', icon: <Phone className="w-5 h-5 shrink-0" /> },
   ];
 
-  const adminLinks = user?.role === 'admin'
-    ? [{ name: isRTL ? 'ملف المدير' : 'Admin Profile', path: '/admin/profile', icon: <Shield className="w-5 h-5 shrink-0" /> }]
-    : [];
+  const adminLinks =
+    user?.role === 'admin'
+      ? [
+          {
+            name: isRTL ? 'لوحة الإدارة' : 'Admin Dashboard',
+            path: '/admin/dashboard',
+            icon: <LayoutDashboard className="w-5 h-5 shrink-0" />,
+          },
+        ]
+      : [];
 
   useEffect(() => { setIsMobileOpen(false); }, [location.pathname]);
 
@@ -62,7 +69,7 @@ const Sidebar = ({ isCollapsed, setIsCollapsed }: SidebarProps) => {
                 {isRTL ? 'مجموعة السماك' : 'Elsamak Group'}
               </div>
               <div className="text-[10px] text-gray-400 font-medium tracking-wide uppercase truncate">
-                {isRTL ? 'قانوني • محاسبي • تحليلي' : 'Legal • Accounting • Analytics'}
+                {t('home.tagline')}
               </div>
             </div>
           )}
@@ -145,25 +152,34 @@ const Sidebar = ({ isCollapsed, setIsCollapsed }: SidebarProps) => {
           </>
         )}
 
-        <div className={clsx('pt-3 mt-3 border-t border-gray-100', isCollapsed && 'flex justify-center')}>
-          <NavLink
-            to="/profile"
-            title={isCollapsed ? (isRTL ? 'الملف الشخصي' : 'Profile') : undefined}
-            className={({ isActive }) => clsx(
-              'flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all duration-150 text-sm font-medium group',
-              isActive
-                ? 'bg-gray-100 text-[var(--color-primary)]'
-                : 'text-gray-600 hover:bg-gray-50 hover:text-[var(--color-primary)]'
-            )}
-          >
-            {({ isActive }) => (
-              <>
-                <Settings className={clsx('w-5 h-5 shrink-0 transition-colors', isActive ? 'text-[var(--color-primary)]' : 'text-gray-400 group-hover:text-[var(--color-primary)]')} />
-                {!isCollapsed && <span className="truncate">{isRTL ? 'الملف الشخصي' : 'My Profile'}</span>}
-              </>
-            )}
-          </NavLink>
-        </div>
+        {user?.role !== 'admin' && (
+          <div className={clsx('pt-3 mt-3 border-t border-gray-100', isCollapsed && 'flex justify-center')}>
+            <NavLink
+              to="/profile"
+              title={isCollapsed ? (isRTL ? 'الملف الشخصي' : 'Profile') : undefined}
+              className={({ isActive }) =>
+                clsx(
+                  'flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all duration-150 text-sm font-medium group',
+                  isActive
+                    ? 'bg-gray-100 text-[var(--color-primary)]'
+                    : 'text-gray-600 hover:bg-gray-50 hover:text-[var(--color-primary)]'
+                )
+              }
+            >
+              {({ isActive }) => (
+                <>
+                  <Settings
+                    className={clsx(
+                      'w-5 h-5 shrink-0 transition-colors',
+                      isActive ? 'text-[var(--color-primary)]' : 'text-gray-400 group-hover:text-[var(--color-primary)]'
+                    )}
+                  />
+                  {!isCollapsed && <span className="truncate">{isRTL ? 'الملف الشخصي' : 'My Profile'}</span>}
+                </>
+              )}
+            </NavLink>
+          </div>
+        )}
       </nav>
 
       {/* Footer */}

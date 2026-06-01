@@ -1,4 +1,4 @@
-import { getApiBaseUrl } from '../config/api';
+import { apiUrl } from '../config/api';
 
 type MeUser = {
   _id?: string;
@@ -12,8 +12,15 @@ type MeUser = {
   role?: string;
 };
 
-function apiBase(): string {
-  return getApiBaseUrl();
+function wrapNetworkError(e: unknown): never {
+  if (e instanceof TypeError) {
+    throw new Error(
+      import.meta.env.DEV
+        ? 'Cannot connect to the API. From the project folder run: npm run dev (and wait for the server to start).'
+        : 'Cannot connect to the API server. Check your network or VITE_API_URL.'
+    );
+  }
+  throw e;
 }
 
 export type AuthStatusResponse = {
@@ -22,7 +29,7 @@ export type AuthStatusResponse = {
 
 export async function getAuthStatus(): Promise<AuthStatusResponse> {
   try {
-    const res = await fetch(`${apiBase()}/api/auth/status`);
+    const res = await fetch(apiUrl('/api/auth/status'));
     const data = (await res.json().catch(() => ({}))) as Record<string, unknown>;
     if (!res.ok) {
       return { adminExists: true };
@@ -67,7 +74,7 @@ async function authPost(
   const controller = new AbortController();
   const tid = setTimeout(() => controller.abort(), timeoutMs);
   try {
-    const res = await fetch(`${apiBase()}${path}`, {
+    const res = await fetch(apiUrl(path), {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(body),
@@ -85,17 +92,22 @@ async function authPost(
     if (name === 'AbortError') {
       throw new Error('Request timed out. Please try again.');
     }
-    throw e;
+    wrapNetworkError(e);
   } finally {
     clearTimeout(tid);
   }
 }
 
 async function authGet(path: string, token: string): Promise<Record<string, unknown>> {
-  const res = await fetch(`${apiBase()}${path}`, {
-    headers: { Authorization: `Bearer ${token}` },
-    mode: 'cors',
-  });
+  let res: Response;
+  try {
+    res = await fetch(apiUrl(path), {
+      headers: { Authorization: `Bearer ${token}` },
+      mode: 'cors',
+    });
+  } catch (e) {
+    wrapNetworkError(e);
+  }
   const data = (await res.json().catch(() => ({}))) as Record<string, unknown>;
   if (!res.ok) {
     const msg = typeof data.message === 'string' ? data.message : `Request failed (${res.status})`;

@@ -127,8 +127,10 @@ const Booking = () => {
  <label className="block text-sm font-medium text-gray-700 mb-1">{t('booking.service_type', isRTL ? 'نوع الخدمة' : 'Service Type')}</label>
  <select name="serviceType" required value={formData.serviceType} onChange={handleChange} className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-[var(--color-gold)] outline-none bg-white text-gray-900 ">
  <option value="" disabled>{t('booking.select_service', isRTL ? 'اختر الخدمة...' : 'Select a service...')}</option>
- <option value="legal">{t('servicesItems.legal_consulting')}</option>
- <option value="accounting">{t('servicesItems.accounting_tax')}</option>
+ <option value="legal">{t('servicesItems.law')}</option>
+ <option value="accounting">{t('servicesItems.accounting')}</option>
+ <option value="analysis">{t('servicesItems.analysis')}</option>
+ <option value="training">{t('servicesItems.training')}</option>
  </select>
  </div>
  </div>

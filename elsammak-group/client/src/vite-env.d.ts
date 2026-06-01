@@ -9,6 +9,10 @@ interface ImportMetaEnv {
   readonly VITE_ABOUT_VIDEO_AUTOPLAY?: string;
   readonly VITE_GOOGLE_MAPS_API_KEY?: string;
   readonly VITE_WHATSAPP_NUMBER?: string;
+  readonly VITE_FACEBOOK_URL?: string;
+  readonly VITE_INSTAGRAM_URL?: string;
+  readonly VITE_TIKTOK_URL?: string;
+  /** @deprecated Use VITE_FACEBOOK_URL */
   readonly VITE_MESSENGER_PAGE?: string;
 }
 
